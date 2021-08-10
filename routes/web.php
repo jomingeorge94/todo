@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('tasks');
 });
+
+Route::post('retrieve-task', 'App\Http\Controllers\TaskController@getTasks')->name('retrieve-task');
+Route::post('task-handler', 'App\Http\Controllers\TaskController@taskHandler')->name('task-handler');
