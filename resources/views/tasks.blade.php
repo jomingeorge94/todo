@@ -87,11 +87,9 @@
                                 .message : 'Failed to update the communication', 'error');
                             return;
                         }
-
-                        Swal.fire('Validation', response && response.message ? response.message :
-                            'Successfully created task', 'success');
-
+                        
                         retrieveTasks();
+                        $('#task_name').val('');
                     },
                     error: function(data) {
                         if (data.responseJSON) {
@@ -130,18 +128,30 @@
                         let tBodyContent = '';
 
                         $.each(response.data, function(index, row) {
-                            console.log(row);
                             let taskRow = '<tr>' +
-                                '<th>' + ++index + '</th>' +
-                                '<td>' + row.task + '</td>' +
-                                '<td>' +
-                                '<button type="submit" class="btn btn-success" style="font-size: 8px">' +
-                                '<i class="fa fa-check" aria-hidden="true"></i>' +
-                                '</button>' +
+                                '<th>' + ++index + '</th>';
 
-                                '<button type="submit" class="btn btn-danger" style="font-size: 8px; margin-left: 5px">' +
-                                '<i class="fa fa-times" aria-hidden="true"></i>' +
-                                '</button>' +
+                            if (row.status === 'complete') {
+                                taskRow += '<td class="text-decoration-line-through">' + row
+                                    .task + '</td>';
+                            } else {
+                                taskRow += '<td>' + row.task + '</td>';
+                            }
+
+                            taskRow +=
+                                '<td>';
+
+                            if (row.status === 'pending') {
+                                taskRow +=
+                                    '<button type="submit" class="btn btn-success" style="font-size: 8px">' +
+                                    '<i class="fa fa-check" aria-hidden="true"></i>' +
+                                    '</button>' +
+                                    '<button type="submit" class="btn btn-danger" style="font-size: 8px; margin-left: 5px">' +
+                                    '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                    '</button>';
+                            }
+
+                            taskRow +=
                                 '</td>' +
                                 '</tr>';
 
