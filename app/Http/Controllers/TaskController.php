@@ -35,4 +35,37 @@ class TaskController extends Controller
 
         return array('status' => 'COMPLETE', 'data' => $tasks);
     }
+
+    public function deleteTask(Request $request)
+    {
+        $this->validate($request, [
+            'task_id' => 'required|numeric'
+        ]);
+
+        $task = \App\Models\Task
+            ::find($request->task_id);
+
+        if (!is_null($task)) {
+            $task->delete();
+        }
+
+        return array('status' => 'COMPLETE', 'message' => 'Successfully deleted task');
+    }
+
+    public function completeTask(Request $request)
+    {
+        $this->validate($request, [
+            'task_id' => 'required|numeric'
+        ]);
+
+        $task = \App\Models\Task
+            ::find($request->task_id);
+
+        if (!is_null($task)) {
+            $task->status = 'complete';
+            $task->save();
+        }
+
+        return array('status' => 'COMPLETE', 'message' => 'Successfully deleted task');
+    }
 }

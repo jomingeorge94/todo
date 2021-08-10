@@ -87,7 +87,7 @@
                                 .message : 'Failed to update the communication', 'error');
                             return;
                         }
-                        
+
                         retrieveTasks();
                         $('#task_name').val('');
                     },
@@ -143,10 +143,12 @@
 
                             if (row.status === 'pending') {
                                 taskRow +=
-                                    '<button type="submit" class="btn btn-success" style="font-size: 8px">' +
+                                    '<button data-task_id="' + row.task_id +
+                                    '" type="submit" class="task_complete_btn btn btn-success" style="font-size: 8px">' +
                                     '<i class="fa fa-check" aria-hidden="true"></i>' +
                                     '</button>' +
-                                    '<button type="submit" class="btn btn-danger" style="font-size: 8px; margin-left: 5px">' +
+                                    '<button data-task_id="' + row.task_id +
+                                    '" type="submit" class="task_delete_btn btn btn-danger" style="font-size: 8px; margin-left: 5px">' +
                                     '<i class="fa fa-times" aria-hidden="true"></i>' +
                                     '</button>';
                             }
@@ -159,6 +161,86 @@
                         });
 
                         $(".todo-task-list tbody").html(tBodyContent);
+
+                        $('.task_delete_btn').click(function(event) {
+                            let data = $(this).data();
+                            deleteTask(data.task_id);
+                        });
+
+                        $('.task_complete_btn').click(function(event) {
+                            let data = $(this).data();
+                            completeTask(data.task_id);
+                        });
+                    }
+                });
+            }
+
+            function deleteTask(taskID) {
+                $.ajax({
+                    url: 'delete-task',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        task_id: taskID,
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        if (response.status !== 'COMPLETE') {
+                            Swal.fire('Validation Error',
+                                response && response.message ? response
+                                .message : 'Failed to update the communication', 'error');
+                            return;
+                        }
+
+                        retrieveTasks();
+                    },
+                    error: function(data) {
+                        if (data.responseJSON) {
+
+                            let errorMessage = '';
+                            $.each(data.responseJSON.errors.action, function(index, value) {
+                                errorMessage += value;
+                            });
+
+                            Swal.fire('Validation Error',
+                                errorMessage, 'error');
+                        }
+                    }
+                });
+            }
+
+            function completeTask(taskID) {
+                $.ajax({
+                    url: 'complete-task',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        task_id: taskID,
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        if (response.status !== 'COMPLETE') {
+                            Swal.fire('Validation Error',
+                                response && response.message ? response
+                                .message : 'Failed to update the communication', 'error');
+                            return;
+                        }
+
+                        retrieveTasks();
+                    },
+                    error: function(data) {
+                        if (data.responseJSON) {
+
+                            let errorMessage = '';
+                            $.each(data.responseJSON.errors.action, function(index, value) {
+                                errorMessage += value;
+                            });
+
+                            Swal.fire('Validation Error',
+                                errorMessage, 'error');
+                        }
                     }
                 });
             }
