@@ -39,7 +39,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+
                         </tbody>
                     </table>
                 </div>
@@ -90,6 +90,8 @@
 
                         Swal.fire('Validation', response && response.message ? response.message :
                             'Successfully created task', 'success');
+
+                        retrieveTasks();
                     },
                     error: function(data) {
                         if (data.responseJSON) {
@@ -107,7 +109,7 @@
             }
 
             function retrieveTasks() {
-                $(".todo-task-list tbody").html('jomin');
+                $(".todo-task-list tbody").html('');
 
                 $.ajax({
                     url: 'retrieve-task',
@@ -125,25 +127,28 @@
                             return;
                         }
 
-                        $.each(response.data, function (index, row) {
-                            let taskRow = '<tr>'+
-                                '<th>1</th>' +
-                                '<td>Mark</td>' +
+                        let tBodyContent = '';
+
+                        $.each(response.data, function(index, row) {
+                            console.log(row);
+                            let taskRow = '<tr>' +
+                                '<th>' + ++index + '</th>' +
+                                '<td>' + row.task + '</td>' +
                                 '<td>' +
-                                    '<button type="submit" class="btn btn-success" style="font-size: 8px">' +
-                                        '<i class="fa fa-check" aria-hidden="true"></i>' +
-                                    '</button>' +
+                                '<button type="submit" class="btn btn-success" style="font-size: 8px">' +
+                                '<i class="fa fa-check" aria-hidden="true"></i>' +
+                                '</button>' +
 
-                                    '<button type="submit" class="btn btn-danger" style="font-size: 8px">' +
-                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
-                                    '</button>' +
-                                '</td>'+
-                            '</tr>';
+                                '<button type="submit" class="btn btn-danger" style="font-size: 8px; margin-left: 5px">' +
+                                '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                '</button>' +
+                                '</td>' +
+                                '</tr>';
 
-                            $(".todo-task-list tbody").appendTo(taskRow);
+                            tBodyContent += taskRow;
                         });
 
-                        console.log(response);
+                        $(".todo-task-list tbody").html(tBodyContent);
                     }
                 });
             }
